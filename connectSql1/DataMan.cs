@@ -120,7 +120,6 @@ namespace connectSql1
                 string file_name = "OrderDtl.txt";
                 string file = Path.Combine(transfer_out_base, file_name);
                 var writer = File.CreateText(file);
-
                 sql_select select = new sql_select();
 
                 SqlCommand command = new SqlCommand(select.Sql_OrderDtl(), connection);
@@ -232,7 +231,6 @@ namespace connectSql1
                 writer.Close();
             }
         }
-
         private void run_OrderRel()
         {
             using (SqlConnection connection = new SqlConnection(
