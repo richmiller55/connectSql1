@@ -690,6 +690,35 @@ return sqlextract;
 
             return sqlextract;
         }
+        public string Sql_ShipDtl()
+        {
+            string sqlextract = @"
+      select
+      sd.Company as Company,               -- char 8 
+      sd.PackNum as PackNum,               -- int
+      sd.PackLine as PackLine,             -- int
+      sd.OrderNum as OrderNum,             -- int
+      sd.OrderLine as OrderLine,           -- int
+      sd.OrderRelNum as OrderRelNum,       -- int
+      sd.OurInventoryShipQty as OurInventoryShipQty, -- decimal 12 2
+      sd.OurJobShipQty as OurJobShipQty,   -- decimal 12 2
+      sd.JobNum as JobNum,                 -- char 14
+      sd.PartNum as PartNum,               -- char 50
+      sd.ShipCmpl as ShipCmpl,              -- smallint
+      sd.WarehouseCode as WarehouseCode,   -- char 8
+      sd.BinNum   as BinNum,               -- char 10
+      sd.UpdatedInventory as UpdatedInventory, -- smallint
+      sd.Invoiced as Invoiced,              -- smallint
+      sd.CustNum as CustNum,               -- int
+      sd.ShipToNum  as ShipToNum,          -- char 14
+      sd.ReadyToInvoice as ReadyToInvoice,  -- smallint
+      sd.ChangedBy as ChangedBy,            -- char 20
+      sd.ChangeDate as ChangeDate          -- int
+     FROM  erp.ShipDtl as sd
+            ";
+
+            return sqlextract;
+        }
         public string Sql_xxq()
         {
             string sqlextract = @"

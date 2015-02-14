@@ -343,5 +343,27 @@ namespace connectSql1
         ShipToNum,
         ShipViaCode
     }
-
+    public enum ShipDtl
+    {
+        Company,
+        PackNum,
+        PackLine,
+        OrderNum,
+        OrderLine,
+        OrderRelNum,
+        OurInventoryShipQty,
+        OurJobShipQty,
+        JobNum,
+        PartNum,
+        ShipCmpl,
+        WarehouseCode,
+        BinNum,
+        UpdatedInventory,
+        Invoiced,
+        CustNum,
+        ShipToNum,
+        ReadyToInvoice,
+        ChangedBy,
+        ChangeDate
+    }
 }

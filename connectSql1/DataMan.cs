@@ -22,6 +22,7 @@ namespace connectSql1
             // run_ContainerHeader();
             run_ShipTo();
             run_ShipHead();
+            run_ShipDtl();
             
             run_InvcDtl();
             run_InvcHeadEx();
@@ -579,6 +580,51 @@ namespace connectSql1
                     row += reader[(int)ShipHead.PayBTPhone] + "\t";
                     row += reader[(int)ShipHead.ShipToNum] + "\t";
                     row += reader[(int)ShipHead.ShipViaCode] + "\t";
+                    row += "fill\n";
+                    writer.Write(row);
+                }
+                writer.Close();
+            }
+        }
+        private void run_ShipDtl()
+        {
+            using (SqlConnection connection = new SqlConnection(
+                this.connectionString))
+            {
+                string file_name = "ShipDtl.txt";
+                string file = Path.Combine(transfer_out_base, file_name);
+                var writer = File.CreateText(file);
+
+                sql_select select = new sql_select();
+
+                SqlCommand command = new SqlCommand(select.Sql_ShipDtl(), connection);
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                int counter = 0;
+                while (reader.Read())
+                {
+                    counter++;
+                    string row = counter.ToString() + "\t";
+                    row += reader[(int)ShipDtl.Company] + "\t";
+                    row += reader[(int)ShipDtl.PackNum] + "\t";
+                    row += reader[(int)ShipDtl.PackLine] + "\t";
+                    row += reader[(int)ShipDtl.OrderNum] + "\t";
+                    row += reader[(int)ShipDtl.OrderLine] + "\t";
+                    row += reader[(int)ShipDtl.OrderRelNum] + "\t";
+                    row += reader[(int)ShipDtl.OurInventoryShipQty] + "\t";
+                    row += reader[(int)ShipDtl.OurJobShipQty] + "\t";
+                    row += reader[(int)ShipDtl.JobNum] + "\t";
+                    row += reader[(int)ShipDtl.PartNum] + "\t";
+                    row += reader[(int)ShipDtl.ShipCmpl] + "\t";
+                    row += reader[(int)ShipDtl.WarehouseCode] + "\t";
+                    row += reader[(int)ShipDtl.BinNum] + "\t";
+                    row += reader[(int)ShipDtl.UpdatedInventory] + "\t";
+                    row += reader[(int)ShipDtl.Invoiced] + "\t";
+                    row += reader[(int)ShipDtl.CustNum] + "\t";
+                    row += reader[(int)ShipDtl.ShipToNum] + "\t";
+                    row += reader[(int)ShipDtl.ReadyToInvoice] + "\t";
+                    row += reader[(int)ShipDtl.ChangedBy] + "\t";
+                    row += reader[(int)ShipDtl.ChangeDate] + "\t";
                     row += "fill\n";
                     writer.Write(row);
                 }
