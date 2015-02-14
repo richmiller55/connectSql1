@@ -18,14 +18,26 @@ namespace connectSql1
         string transfer_out_base = @"Z:/e10/transfer";
         public DataMan()
         {
-            // run_InvcDtl();
                 // run_ContainerDetail();
             // run_ContainerHeader();
-            run_OrderHed();
+            run_ShipTo();
+            run_ShipHead();
+            
             run_InvcDtl();
+            run_InvcHeadEx();
+            run_InvcMisc();
+            run_InvcTax();
+                  
             run_OrderDtl();
+            run_OrderHed();
             run_OrderRel();
-          
+            
+            /*   
+            run_CustGrup();
+            run_PartBin();
+            run_Customer();
+            run_Part();          
+             * */
         }
         private void run_ContainerDetail()
         {
@@ -84,7 +96,7 @@ namespace connectSql1
                     row += reader[(int)OrderHed.Company] + "\t";
                     row += reader[(int)OrderHed.OrderNum] + "\t";
                     row += reader[(int)OrderHed.CustNum] + "\t";
-                    row += reader[(int)OrderHed.OpenOrder] + "\t";
+                    row += boolstr_to_int(reader[(int)OrderHed.OpenOrder].ToString()) + "\t";
                     row += DateToString(reader[(int)OrderHed.OrderDate].ToString()) + "\t";
                     row += reader[(int)OrderHed.PONum] + "\t";
                     row += DateToString(reader[(int)OrderHed.NeedByDate].ToString()) + "\t";
@@ -133,8 +145,8 @@ namespace connectSql1
                     row += reader[(int)OrderDtl.Company] + "\t";
                     row += reader[(int)OrderDtl.OrderLine] + "\t";
                     row += reader[(int)OrderDtl.OrderNum] + "\t";
+                    row += boolstr_to_int(reader[(int)OrderDtl.OpenLine].ToString()) + "\t";
                     row += reader[(int)OrderDtl.OrderQty] + "\t";
-                    row += reader[(int)OrderDtl.OpenLine] + "\t";
                     row += reader[(int)OrderDtl.OverridePriceList] + "\t";
                     row += reader[(int)OrderDtl.PartNum] + "\t";
                     row += reader[(int)OrderDtl.PriceGroupCode] + "\t";
@@ -159,20 +171,6 @@ namespace connectSql1
                 }
                 writer.Close();
             }
-        }
-        private string DateToString(string fullDate)
-        {
-            string yyyymmdd_Date = "";
-            if (fullDate.Length > 10)
-            {
-                string justDate = fullDate.Substring(0, 10).Trim();
-                char[] delimiterChars = { ' ', '/' };
-                string[] date_array = justDate.Split(delimiterChars);
-                yyyymmdd_Date = System.Convert.ToInt32(date_array[2]).ToString("D4");
-                yyyymmdd_Date += System.Convert.ToInt32(date_array[1]).ToString("D2");
-                yyyymmdd_Date += System.Convert.ToInt32(date_array[0]).ToString("D2"); 
-            }
-            return yyyymmdd_Date;
         }
         private void run_InvcDtl()
         {
@@ -225,6 +223,121 @@ namespace connectSql1
                     row += reader[(int)InvcDtl.SellingFactor] + "\t";
                     row += reader[(int)InvcDtl.SellingFactorDirection] + "\t";
                     row += reader[(int)InvcDtl.filler] + "\t";
+                    row += "fill\n";
+                    writer.Write(row);
+                }
+                writer.Close();
+            }
+        }
+        private void run_InvcHeadEx()
+        {
+            using (SqlConnection connection = new SqlConnection(
+                this.connectionString))
+            {
+                string file_name = "InvcHeadEx.txt";
+                string file = Path.Combine(transfer_out_base, file_name);
+                var writer = File.CreateText(file);
+
+                sql_select select = new sql_select();
+
+                SqlCommand command = new SqlCommand(select.Sql_InvcHeadEx(), connection);
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                int counter = 0;
+                while (reader.Read())
+                {
+                    counter++;
+                    string row = counter.ToString() + "\t";
+                    row += reader[(int)InvcHeadEx.FiscalYear] + "\t";
+                    row += reader[(int)InvcHeadEx.FiscalPeriod] + "\t";
+                    row += reader[(int)InvcHeadEx.SoldToCustNum] + "\t";
+                    row += reader[(int)InvcHeadEx.CustNum] + "\t";
+                    row += reader[(int)InvcHeadEx.InvoiceNum] + "\t";
+                    row += reader[(int)InvcHeadEx.OrderNum] + "\t";
+                    
+                    row += DateToString(reader[(int)InvcHeadEx.InvoiceDate].ToString()) + "\t";
+                    row += reader[(int)InvcHeadEx.CreditMemo] + "\t";
+                    row += reader[(int)InvcHeadEx.DocInvoiceAmt] + "\t";
+                    row += reader[(int)InvcHeadEx.InvoiceAmt] + "\t";
+                    row += reader[(int)InvcHeadEx.EntryPerson] + "\t";
+                    row += reader[(int)InvcHeadEx.SalesRepList] + "\t";
+                    row += reader[(int)InvcHeadEx.StartUp] + "\t";
+                    row += reader[(int)InvcHeadEx.Posted] + "\t";
+                    row += reader[(int)InvcHeadEx.InvoiceBal] + "\t";
+                    row += reader[(int)InvcHeadEx.UnappliedCash] + "\t";
+                    row += reader[(int)InvcHeadEx.DebitNote] + "\t";
+                    row += reader[(int)InvcHeadEx.InvoiceSuffix] + "\t";
+                    row += reader[(int)InvcHeadEx.CheckBox01] + "\t";
+                    row += "fill\n";
+                    writer.Write(row);
+                }
+                writer.Close();
+            }
+        }
+        private void run_InvcMisc()
+        {
+            using (SqlConnection connection = new SqlConnection(
+                this.connectionString))
+            {
+                string file_name = "InvcMisc.txt";
+                string file = Path.Combine(transfer_out_base, file_name);
+                var writer = File.CreateText(file);
+
+                sql_select select = new sql_select();
+
+                SqlCommand command = new SqlCommand(select.Sql_InvcMisc(), connection);
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                int counter = 0;
+                while (reader.Read())
+                {
+                    counter++;
+                    string row = counter.ToString() + "\t";
+                    row += reader[(int)InvcMisc.Company] + "\t";
+                    row += reader[(int)InvcMisc.InvoiceNum] + "\t";
+                    row += reader[(int)InvcMisc.InvoiceLine] + "\t";
+                    row += reader[(int)InvcMisc.MiscCode] + "\t";
+                    row += reader[(int)InvcMisc.Description] + "\t";
+                    row += reader[(int)InvcMisc.DocMiscAmt] + "\t";
+                    row += reader[(int)InvcMisc.MiscAmt] + "\t";
+                    // row += reader[(int)InvcMisc.PackNum] + "\t";
+                    // row += reader[(int)InvcMisc.TrackingNum] + "\t";
+                    row += "fill\n";
+                    writer.Write(row);
+                }
+                writer.Close();
+            }
+        }
+        private void run_InvcTax()
+        {
+            using (SqlConnection connection = new SqlConnection(
+                this.connectionString))
+            {
+                string file_name = "InvcTax.txt";
+                string file = Path.Combine(transfer_out_base, file_name);
+                var writer = File.CreateText(file);
+
+                sql_select select = new sql_select();
+
+                SqlCommand command = new SqlCommand(select.Sql_InvcTax(), connection);
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                int counter = 0;
+                while (reader.Read())
+                {
+                    counter++;
+                    string row = counter.ToString() + "\t";
+                    row += reader[(int)InvcTax.Company] + "\t";
+                    row += reader[(int)InvcTax.InvoiceNum] + "\t";
+                    row += reader[(int)InvcTax.InvoiceLine] + "\t";
+                    row += reader[(int)InvcTax.TaxCode] + "\t";
+                    row += reader[(int)InvcTax.ReportableAmt] + "\t";
+                    row += reader[(int)InvcTax.DocReportableAmt] + "\t";
+                    row += reader[(int)InvcTax.TaxableAmt] + "\t";
+                    row += reader[(int)InvcTax.TaxAmt] + "\t";
+                    row += reader[(int)InvcTax.TaxDivision] + "\t";
+                    row += reader[(int)InvcTax.Manual] + "\t";
+                    row += DateToString(reader[(int)InvcDtl.ShipDate].ToString()) + "\t";
                     row += "fill\n";
                     writer.Write(row);
                 }
@@ -359,6 +472,314 @@ namespace connectSql1
                 }
                 writer.Close();
             }
+        }
+        private void run_ProdGrup()
+        {
+            using (SqlConnection connection = new SqlConnection(
+                this.connectionString))
+            {
+                string file_name = "ProdGrup.txt";
+                string file = Path.Combine(transfer_out_base, file_name);
+                var writer = File.CreateText(file);
+
+                sql_select select = new sql_select();
+
+                SqlCommand command = new SqlCommand(select.Sql_ProdGrup(), connection);
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                int counter = 0;
+                while (reader.Read())
+                {
+                    counter++;
+                    string row = counter.ToString() + "\t";
+                    row += reader[(int)ProdGrup.Company] + "\t";
+                    row += reader[(int)ProdGrup.Description] + "\t";
+                    row += reader[(int)ProdGrup.ProdCode] + "\t";
+                    row += "fill\n";
+                    writer.Write(row);
+                }
+                writer.Close();
+            }
+        }
+        private void run_ShipTo()
+        {
+            using (SqlConnection connection = new SqlConnection(
+                this.connectionString))
+            {
+                string file_name = "ShipTo.txt";
+                string file = Path.Combine(transfer_out_base, file_name);
+                var writer = File.CreateText(file);
+
+                sql_select select = new sql_select();
+
+                SqlCommand command = new SqlCommand(select.Sql_ShipTo(), connection);
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                int counter = 0;
+                while (reader.Read())
+                {
+                    counter++;
+                    string row = counter.ToString() + "\t";
+                    row += reader[(int)ShipTo.Company] + "\t";
+                    row += reader[(int)ShipTo.CustNum] + "\t";
+                    row += reader[(int)ShipTo.ShipToNum] + "\t";
+                    row += reader[(int)ShipTo.Name] + "\t";
+                    row += reader[(int)ShipTo.Address1] + "\t";
+                    row += reader[(int)ShipTo.Address2] + "\t";
+                    row += reader[(int)ShipTo.Address3] + "\t";
+                    row += reader[(int)ShipTo.City] + "\t";
+                    row += reader[(int)ShipTo.State] + "\t";
+                    row += reader[(int)ShipTo.ZIP] + "\t";
+                    row += reader[(int)ShipTo.PhoneNum] + "\t";
+                    row += reader[(int)ShipTo.Country] + "\t";
+                    row += reader[(int)ShipTo.TerritoryID] + "\t";
+                    row += reader[(int)ShipTo.CountryNum] + "\t";
+                    row += reader[(int)ShipTo.SalesRepCode] + "\t";
+                    row += "fill\n";
+                    writer.Write(row);
+                }
+                writer.Close();
+            }
+        }
+        private void run_ShipHead()
+        {
+            using (SqlConnection connection = new SqlConnection(
+                this.connectionString))
+            {
+                string file_name = "ShipHead.txt";
+                string file = Path.Combine(transfer_out_base, file_name);
+                var writer = File.CreateText(file);
+
+                sql_select select = new sql_select();
+
+                SqlCommand command = new SqlCommand(select.Sql_ShipHead(), connection);
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                int counter = 0;
+                while (reader.Read())
+                {
+                    counter++;
+                    string row = counter.ToString() + "\t";
+                    row += reader[(int)ShipHead.Company] + "\t";
+                    row += reader[(int)ShipHead.CustNum] + "\t";
+                    row += reader[(int)ShipHead.PackNum] + "\t";
+                    row += reader[(int)ShipHead.ReadyToInvoice] + "\t";
+                    row += reader[(int)ShipHead.Invoiced] + "\t";
+                    row += reader[(int)ShipHead.FreightedShipViaCode] + "\t";
+                    row += reader[(int)ShipHead.EntryPerson] + "\t";
+                    row += reader[(int)ShipHead.ShipDate] + "\t";
+                    row += reader[(int)ShipHead.Voided] + "\t";
+                    row += reader[(int)ShipHead.TrackingNumber] + "\t";
+                    row += reader[(int)ShipHead.PayBTAddress1] + "\t";
+                    row += reader[(int)ShipHead.PayBTAddress2] + "\t";
+                    row += reader[(int)ShipHead.PayBTCity] + "\t";
+                    row += reader[(int)ShipHead.PayBTState] + "\t";
+                    row += reader[(int)ShipHead.PayBTZip] + "\t";
+                    row += reader[(int)ShipHead.PayBTCountry] + "\t";
+                    row += reader[(int)ShipHead.PayBTPhone] + "\t";
+                    row += reader[(int)ShipHead.ShipToNum] + "\t";
+                    row += reader[(int)ShipHead.ShipViaCode] + "\t";
+                    row += "fill\n";
+                    writer.Write(row);
+                }
+                writer.Close();
+            }
+        }
+        private void run_PartBin()
+        {
+            using (SqlConnection connection = new SqlConnection(
+                this.connectionString))
+            {
+                string file_name = "PartBin.txt";
+                string file = Path.Combine(transfer_out_base, file_name);
+                var writer = File.CreateText(file);
+
+                sql_select select = new sql_select();
+
+                SqlCommand command = new SqlCommand(select.Sql_PartBin(), connection);
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                int counter = 0;
+                while (reader.Read())
+                {
+                    counter++;
+                    string row = counter.ToString() + "\t";
+                    row += reader[(int)PartBin.Company] + "\t";
+                    row += reader[(int)PartBin.partNum] + "\t";
+                    row += reader[(int)PartBin.WarehouseCode] + "\t";
+                    row += reader[(int)PartBin.BinNum] + "\t";
+                    row += reader[(int)PartBin.OnhandQty] + "\t";
+
+                    row += "fill\n";
+                    writer.Write(row);
+                }
+                writer.Close();
+            }
+        }
+        private void run_CustGrup()
+        {
+            using (SqlConnection connection = new SqlConnection(
+                this.connectionString))
+            {
+                string file_name = "CustGrup.txt";
+                string file = Path.Combine(transfer_out_base, file_name);
+                var writer = File.CreateText(file);
+
+                sql_select select = new sql_select();
+
+                SqlCommand command = new SqlCommand(select.Sql_OrderRel(), connection);
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                int counter = 0;
+                while (reader.Read())
+                {
+                    counter++;
+                    string row = counter.ToString() + "\t";
+                    row += reader[(int)CustGrup.Company] + "\t";
+                    row += reader[(int)CustGrup.GroupCode] + "\t";
+                    row += reader[(int)CustGrup.GroupDesc] + "\t";
+                    row += reader[(int)CustGrup.SalesCatID] + "\t";
+
+                    row += "fill\n";
+                    writer.Write(row);
+                }
+                writer.Close();
+            }
+        }
+        private void run_Part()
+        {
+            using (SqlConnection connection = new SqlConnection(
+                this.connectionString))
+            {
+                string file_name = "Part.txt";
+                string file = Path.Combine(transfer_out_base, file_name);
+                var writer = File.CreateText(file);
+
+                sql_select select = new sql_select();
+
+                SqlCommand command = new SqlCommand(select.Sql_Part(), connection);
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                int counter = 0;
+                while (reader.Read())
+                {
+                    counter++;
+                    string row = counter.ToString() + "\t";
+                    row += reader[(int)Part.Company] + "\t";
+                    row += reader[(int)Part.partNum] + "\t";
+                    row += reader[(int)Part.PartDescription] + "\t";
+                    row += reader[(int)Part.ProdCode] + "\t";
+                    row += reader[(int)Part.BasePart] + "\t";
+                    row += reader[(int)Part.PrintType] + "\t";
+                    row += reader[(int)Part.UnitPrice] + "\t";
+                    row += reader[(int)Part.RunOut] + "\t";
+                    row += reader[(int)Part.SearchWord] + "\t";
+                    row += reader[(int)Part.TypeCode] + "\t";
+                    row += reader[(int)Part.Inactive] + "\t";
+                    row += reader[(int)Part.ClassID] + "\t";
+                    row += reader[(int)Part.SellingFactor] + "\t";
+                    row += reader[(int)Part.LOC] + "\t";
+                    row += "fill\n";
+                    writer.Write(row);
+                }
+                writer.Close();
+            }
+        }
+        private void run_Customer()
+        {
+            using (SqlConnection connection = new SqlConnection(
+                this.connectionString))
+            {
+                string file_name = "Customer.txt";
+                string file = Path.Combine(transfer_out_base, file_name);
+                var writer = File.CreateText(file);
+
+                sql_select select = new sql_select();
+
+                SqlCommand command = new SqlCommand(select.Sql_Customer(), connection);
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                int counter = 0;
+                while (reader.Read())
+                {
+                    counter++;
+                    string row = counter.ToString() + "\t";
+                    row += reader[(int)Customer.CustID] + "\t";
+                    row += reader[(int)Customer.CustNum] + "\t";
+                    row += reader[(int)Customer.Name] + "\t";
+                    row += reader[(int)Customer.Address1 ] + "\t";
+                    row += reader[(int)Customer.Address2] + "\t";
+                    row += reader[(int)Customer.Address3] + "\t";
+                    row += reader[(int)Customer.City] + "\t";
+                    row += reader[(int)Customer.State] + "\t";
+                    row += reader[(int)Customer.Zip] + "\t";
+                    row += reader[(int)Customer.Country] + "\t";
+                    row += reader[(int)Customer.TerritoryID] + "\t";
+                    row += reader[(int)Customer.SalesRepCode] + "\t";
+                    row += reader[(int)Customer.TermsCode] + "\t";
+                    row += reader[(int)Customer.ShipViaCode] + "\t";
+                    row += reader[(int)Customer.GroupCode] + "\t";
+                    row += reader[(int)Customer.SalesCatID] + "\t";
+                    row += reader[(int)Customer.CreditHold] + "\t";
+                    row += "fill\n";
+                    writer.Write(row);
+                }
+                writer.Close();
+            }
+        }
+        private void run_OrderxxxRel()
+        {
+            using (SqlConnection connection = new SqlConnection(
+                this.connectionString))
+            {
+                string file_name = "OrderRel.txt";
+                string file = Path.Combine(transfer_out_base, file_name);
+                var writer = File.CreateText(file);
+
+                sql_select select = new sql_select();
+
+                SqlCommand command = new SqlCommand(select.Sql_OrderRel(), connection);
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                int counter = 0;
+                while (reader.Read())
+                {
+                    counter++;
+                    string row = counter.ToString() + "\t";
+                    row += reader[(int)OrderRel.Company] + "\t";
+
+                    row += "fill\n";
+                    writer.Write(row);
+                }
+                writer.Close();
+            }
+        }
+        private string DateToString(string fullDate)
+        {
+            string yyyymmdd_Date = "";
+            if (fullDate.Length > 10)
+            {
+                string justDate = fullDate.Substring(0, 10).Trim();
+                char[] delimiterChars = { ' ', '/' };
+                string[] date_array = justDate.Split(delimiterChars);
+                yyyymmdd_Date = System.Convert.ToInt32(date_array[2]).ToString("D4");
+                yyyymmdd_Date += System.Convert.ToInt32(date_array[0]).ToString("D2");
+                yyyymmdd_Date += System.Convert.ToInt32(date_array[1]).ToString("D2");
+            }
+            return yyyymmdd_Date;
+        }
+        private int boolstr_to_int(string value)
+        {
+            int row;
+            if (value.Equals("False"))
+            {
+                row = 0;
+            }
+            else
+            {
+                row = 1;
+            }
+            return row;
         }
     }
 }

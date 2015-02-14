@@ -67,9 +67,9 @@ namespace connectSql1
       cg.GroupCode  as GroupCode,  -- char 4
       cg.GroupDesc as GroupDesc, -- char 20
       cg.SalesCatID as SalesCatID, -- char 4
-      cg.Character01 as Character01, -- char 1000 super group
-      cg.CheckBox01 as CheckBox01, -- int?  supress line in reporting
-      cg.Number01 as Number01,   -- int sort order
+      ''  as Character01, -- char 1000 super group
+      ''  as CheckBox01, -- int?  supress line in reporting
+      ''  as Number01,   -- int sort order
       0 as filler
      FROM  erp.CustGrup as cg
 
@@ -95,6 +95,35 @@ namespace connectSql1
             return sqlextract;
         }
         public string Sql_Customer()
+        {
+            string sqlextract = @"
+      select
+      cm.CustID as CustID,
+      cm.CustNum as CustNum,
+      cm.Name    as Name,
+      cm.Address1  as Address1,
+      cm.Address2  as Address2,
+      cm.Address3  as Address3,
+      cm.City    as City,
+      cm.State   as State,
+      cm.Zip     as Zip,
+      cm.Country as Country,
+      cm.TerritoryID as TerritoryID,
+      cm.SalesRepCode as SalesRepCode,
+      cm.TermsCode as TermsCode,
+      cm.ShipViaCode as ShipViaCode,
+      cm.GroupCode as GroupCode,
+      cg.SalesCatID as channel,
+      cm.CreditHold as CreditHold
+
+     FROM  erp.Customer as cm
+        left join erp.CustGrup as cg
+        on cg.Company = cm.Company and
+           cg.GroupCode = cm.GroupCode
+            ";
+            return sqlextract;
+        }
+        public string Sql_CustomerFull()
         {
             string sqlextract = @"
       select
@@ -284,7 +313,7 @@ pt.ReconcileNum as ReconcileNum
       od.Company as Company, -- char 8 
       od.OrderLine as OrderLine,  -- int
       od.OrderNum as OrderNum,    -- int
-      od.OpenLine as OpenLine,    -- smallint 
+      od.OpenLine as OpenLine,    -- bool
       od.OrderQty as OrderQty,    -- decimal 12,2
       od.OverridePriceList as OverridePriceList, -- smallint
       od.PartNum as PartNum,               -- char 50
@@ -373,34 +402,175 @@ pt.ReconcileNum as ReconcileNum
         public string Sql_Part()
         {
             string sqlextract = @"
+     select
+      p.Company as Company, -- char 8 
+      p.partNum  as partNum,  -- char 50
+      p.PartDescription as PartDescription, -- char 50
+      p.ProdCode as ProdCode,   -- char 8
+      substring(p.PartDescription,1,19) as basePart, -- char 20
+      substring(p.PartDescription,21,3) as printType,  -- 3
+      p.UnitPrice as unitPrice, -- 12,4
+      -- p.ShortChar02 as loc,  -- varchar 50
+      p.RunOut  as RunOut,   -- int
+      p.SearchWord as SearchWord,  -- varchar 8
+      p.TypeCode as TypeCode, -- char 1
 
+      p.Inactive as Inactive,
+
+      p.ClassID     as ClassID,
+      p.SellingFactor as SellingFactor,
+      pud.LOC_c as LOC,
+      p.RunOut as RunOut,
+      1  as filler
+     FROM  erp.Part as p
+     LEFT JOIN erp.Part_UD as pud
+     on p.SysRowID = pud.ForeignSysRowID
+            ";
+            return sqlextract;
+        }
+        public string Sql_PartFull()
+        {
+            string sqlextract = @"
+     select
+      p.Company as Company, -- char 8 
+      p.partNum  as partNum,  -- char 50
+      p.PartDescription as PartDescription, -- char 50
+      p.ProdCode as ProdCode,   -- char 8
+      substring(p.PartDescription,1,19) as basePart, -- char 20
+      substring(p.PartDescription,21,3) as printType,  -- 3
+      p.UnitPrice as unitPrice, -- 12,4
+      p.ShortChar02 as loc,  -- varchar 50
+      p.RunOut  as RunOut,   -- int
+      p.SearchWord as SearchWord,  -- varchar 8
+      p.TypeCode as TypeCode, -- char 1
+      p.Number01 as CasePack, -- decimal 10,2
+      p.ShortChar03 as flyer, -- x 50
+      p.ShortChar04 as flyerNickname, -- x 50
+      p.CheckBox01 as oneTimeBuy, -- smallint
+      p.UserChar1 as aicDescr,     -- x30
+      p.Inactive as Inactive,
+      p.Number02 as minWOS,
+      p.Number03 as maxWOS,
+      p.Number04 as retailPrice,
+      p.Number08 as listPrice,
+      p.CheckBox02 as arCoating,        -- smallint
+      p.CheckBox03 as rxAdaptable,      -- smallint
+      p.CheckBox04 as springHinge,      -- smallint
+      p.CheckBox05 as coordinatingCase, -- smallint
+      p.Character01 as character01,
+      p.Character02 as character02,
+      p.Character03 as character03,
+      p.Character04 as character04,
+      p.Character05 as character05,
+      p.Character06 as character06,
+      p.Number05 as frameDim,
+      p.Number06 as bridgeDim,
+      p.Number07 as templeDim,
+      p.Number09 as avgCost,
+      p.Number10 as avgPOCost,
+      p.Number11 as freightCost,
+      p.Number12 as customsCost,
+      p.Number13 as matlBurden, 
+      p.Number14 as lastPOCost, 
+      p.ShortChar05 as OrderingType,
+      p.ShortChar06 as PrintOptions,
+      p.ShortChar07 as gender,
+      p.ShortChar08 as programLoc,
+
+      p.ClassID     as ClassID,
+      p.CheckBox08 as DirectShip,         -- smallint
+      p.SellingFactor as SellingFactor,
+      p.Character07 as character07,
+      p.Character08 as character08,
+      p.Character09 as character09,
+      p.Character10 as character10,
+      1  as filler
+     FROM  erp.Part as p
             ";
             return sqlextract;
         }
         public string Sql_PartBin()
         {
             string sqlextract = @"
-
+      select
+      pb.Company as Company, -- char 8 
+      pb.partNum  as partNum,  -- char 50
+      pb.WarehouseCode as WarehouseCode, -- char 8
+      pb.BinNum as BinNum, -- char 10
+      pb.OnhandQty as OnhandQty, -- decimal 12,2
+      pb.LotNum as LotNum  -- char 30
+     FROM  erp.PartBin as pb
             ";
             return sqlextract;
         }
-        
-        /*
-         * removed
-         *  id.SalesChart as SalesChart,
-         *  id.SalesDept as SalesDept,
-         *  id.SalesDiv as SalesDiv,
+        public string Sql_InvcHeadEx()
+        {
+            string sqlextract = @"
+                select
+      ih.fiscalYear as wyear,
+      ih.fiscalPeriod as wper,
+      ih.SoldToCustNum as SoldToCustNum,
+      ih.CustNum as BillToCustNum,
+      ih.InvoiceNum as invNum,
+      ih.OrderNum as orderNum,
+      ih.InvoiceDate as InvoiceDate,
+      ih.CreditMemo as CreditMemo,
+      ih.DocInvoiceAmt as DocInvoiceAmt,
+      ih.InvoiceAmt as InvoiceAmt,
+      ih.EntryPerson as EntryPerson,
+      ih.SalesRepList as SalesRepList,
+      ih.StartUp as StartUp,
+      ih.Posted as Posted,
+      ih.InvoiceBal as InvoiceBal,
+      ih.UnappliedCash as UnappliedCash,
+      ih.DebitNote as DebitNote,
+      ih.InvoiceSuffix as InvoiceSuffix,
+      0 as CheckBox01,
+      1 as filler
+      from erp.InvcHead as ih
+      where ih.InvoiceNum >= 1100000
+        ";
+return sqlextract;
+        }
+        public string Sql_InvcMisc()
+        {
+            string sqlextract = @"
+       select
+            im.Company as Company,  -- char 8
+            im.InvoiceNum as InvoiceNum, -- int
+            im.InvoiceLine as InvoiceLine, -- int
+            im.MiscCode as MiscCode,  -- char 4
+            im.Description as Description,  -- char 30
+            im.DocMiscAmt as DocMiscAmt,   -- 12,2 decimal
+            im.MiscAmt as MiscAmt          -- 12,2 decimal
+            
+      from erp.InvcMisc as im
+  where im.InvoiceNum >= 1100000
+     --  LEFT JOIN erp.InvcMisc_UD as imud
+     -- on im.SysRowID = imud.ForeignSysRowID
 
-         * DataTable table = reader.GetSchemaTable();  
-         * foreach (DataRow row in table.Rows)
-                {
-                    foreach (DataColumn column in table.Columns)
-                    {
-                        Console.WriteLine(row[column]);
-                    }
-                }
-         * */
-        
+        ";
+            return sqlextract;
+        }
+        public string Sql_InvcTax()
+        {
+            string sqlextract = @"
+        select
+            it.Company          as Company,  
+            it.InvoiceNum       as InvoiceNum, 
+            it.InvoiceLine      as InvoiceLine,
+            it.TaxCode          as TaxCode ,
+            it.ReportableAmt    as ReportableAmt,
+            it.DocReportableAmt as DocReportableAmt,
+            it.TaxableAmt       as TaxableAmt,
+            -- it.Percent          as Percent,
+            it.TaxAmt           as TaxAmt, 
+            
+            it.Manual           as Manual
+      from erp.InvcTax as it
+        ";
+            return sqlextract;
+        }
         public string Sql_InvcDtl()
         {
             string sqlextract = @"
@@ -451,9 +621,83 @@ pt.ReconcileNum as ReconcileNum
             ih.SoldToCustNum = cmSt.CustNum
         left join erp.Part as pt
          on pt.Company = id.Company and
-            pt.PartNum = id.PartNum";
+            pt.PartNum = id.PartNum
+    where ih.InvoiceNum >= 1100000";
+            return sqlextract;
+        }
+        public string Sql_ProdGrup()
+        {
+            string sqlextract = @"
+      select
+      pg.Company as Company, -- char 8 
+      pg.ProdCode  as ProdCode,  -- char 8
+      pg.Description as Description -- char 30
+     FROM  pub.ProdGrup as pg
+            ";
 
             return sqlextract;
         }
+        public string Sql_ShipTo()
+        {
+            string sqlextract = @"
+     select
+      st.Company              as Company, -- char 8 
+      st.CustNum              as CustNum,  -- int
+      st.ShipToNum            as ShipToNum, -- x14
+      st.Name                 as Name, -- x50
+      st.Address1             as Address1, -- x50
+      st.Address2             as Address2, -- x50
+      st.Address3             as Address3, -- x50
+      st.City                 as City, -- x50
+      st.State                as State, -- x50
+      st.ZIP                  as ZIP, -- x10
+      st.PhoneNum             as PhoneNum, -- x20
+      st.Country              as Country, -- x50
+      st.TerritoryID          as TerritoryID, -- x8
+      st.CountryNum           as CountryNum, -- int
+      st.SalesRepCode         as SalesRepCode
+     FROM  erp.ShipTo as st
+            ";
+
+            return sqlextract;
+        }
+        public string Sql_ShipHead()
+        {
+            string sqlextract = @"
+      select
+      sh.Company as Company,               -- char 8 
+      sh.CustNum as CustNum,               -- int
+      sh.PackNum as PackNum,               -- int
+      sh.ReadyToInvoice as ReadyToInvoice,  -- smallint
+      sh.Invoiced as Invoiced,             -- smallint
+      sh.FreightedShipViaCode as FreightedShipViaCode, -- char 4
+      sh.EntryPerson as EntryPerson,       -- char 20
+      sh.ShipDate as ShipDate,             -- int
+      sh.Voided as Voided,                  -- smallint
+      sh.TrackingNumber as TrackingNumber,
+      sh.PayBTAddress1 as PayBTAddress1, 
+      sh.PayBTAddress2 as PayBTAddress2, 
+      sh.PayBTCity     as PayBTCity,     
+      sh.PayBTState    as PayBTState,    
+      sh.PayBTZip      as PayBTZip,      
+      sh.PayBTCountry  as PayBTCountry,  
+      sh.PayBTPhone    as PayBTPhone,
+      sh.ShipToNum     as ShipToNum,
+      sh.ShipViaCode   as ShipViaCode,
+      1 as filler
+     FROM  erp.ShipHead as sh
+            ";
+
+            return sqlextract;
+        }
+        public string Sql_xxq()
+        {
+            string sqlextract = @"
+
+            ";
+
+            return sqlextract;
+        }
+
     }
 }
