@@ -45,7 +45,14 @@ namespace connectSql1
         ShipViaCode,
         GroupCode,
         SalesCatID,
-        CreditHold
+        CreditHold,
+        ResaleID,
+        PrintStatements,
+        TaxExempt,
+        TaxRegionCode,
+        CreditLimit,
+        PhoneNum,
+        BuyGroupCustID
     }
     public enum InvcDtl
     {
@@ -127,7 +134,6 @@ namespace connectSql1
         DocReportableAmt,
         TaxableAmt,
         TaxAmt,
-        TaxDivision,
         Manual
     }
     public enum OrderRel
@@ -187,7 +193,7 @@ namespace connectSql1
         RequestDate,
         ShipToNum,
         ShipViaCode,
-        ShortChar01,
+        OrderType,
         ShortChar02,
         ShortChar03,
         TermsCode,
@@ -199,6 +205,7 @@ namespace connectSql1
         TotalReleases,
         TotalTax,
         VoidOrder,
+        PickListComment,
         CheckBox04,
         CheckBox07,
         CheckBox03
@@ -265,28 +272,49 @@ namespace connectSql1
       GroupCode ,
       GroupDesc ,
       SalesCatID ,
-      Character01 ,
-      CheckBox01 ,
-      Number01 ,
+      SuperGroup,
       filler
     }
     public enum Part
     {
-      Company ,
-      partNum ,
-      PartDescription ,
-      ProdCode ,
-      BasePart ,
-      PrintType,
-      UnitPrice ,
-      RunOut ,
-      SearchWord ,
-      TypeCode ,
-      Inactive ,
-      ClassID ,
-      SellingFactor ,
-      LOC,
-      filler
+        Company,
+        partNum,
+        PartDescription,
+        ProdCode,
+        BasePart,
+        PrintType,
+        UnitPrice,
+        RunOut,
+        SearchWord,
+        TypeCode,
+        Inactive,
+        ClassID,
+        SellingFactor,
+        LOC,
+        AICDesc,
+        Brand,
+        CasePack,
+        ColorAssortment,
+        DirectShip,
+        ListPrice,
+        Flyer,
+        FlyerName,
+        TeamSpirit,
+        OrderingType,
+        PrintOptions,
+        MaximumWOS,
+        MinimumWOS,
+        League,
+        TeamPartDescrption,
+        ARCoating,
+        CoordinatedCase,
+        RxAdaptable,
+        SpringHinge,
+        Program,
+        ProgramLOC,
+        SalesUM,
+        RetailPrice,
+        filler
     }
     public enum PartBin
     {
@@ -319,7 +347,8 @@ namespace connectSql1
         Country,
         TerritoryID,
         CountryNum,
-        SalesRepCode
+        SalesRepCode,
+        ShipViaCode
     }
     public enum ShipHead
     {
@@ -365,5 +394,133 @@ namespace connectSql1
         ReadyToInvoice,
         ChangedBy,
         ChangeDate
+    }
+    public enum RlsHead
+    {
+      Company,
+      RlsClassCode,
+      TopCustNum,
+      CustNum
+    }
+    public enum POHeader
+    {
+        Company,
+        PONum,
+        OrderDate,
+        ApprovalStatus,
+        Approve,
+        ApprovedBy,
+        ApprovedDate,
+        BuyerID,
+        Confirmed,
+        EntryPerson,
+        Linked,
+        OpenOrder,
+        VendorNum
+    }
+    public enum PODetail
+    {
+        Company,
+        OpenLine,
+        VoidLine,
+        PONUM,
+        POLine,
+        LineDesc,
+        IUM,
+        UnitCost,
+        OrderQty,
+        XOrderQty,
+        Taxable,
+        PUM,
+        CostPerCode,
+        PartNum,
+        VenPartNum,
+        AdvancePayBal,
+        Confirmed,
+        DateChgReq,
+        ConfirmDate,
+        OrderNum,
+        OrderLine,
+        Linked,
+        CustomerShipDate,
+        ReqDeliveryDate
+
+    }
+    public enum PORel
+    {
+        Company,
+        PONum,
+        POLine,
+        PORelNum,
+        DueDate,
+        XRelQty,
+        RelQty,
+        WarehouseCode,
+        ReceivedQty,
+        PromiseDt,
+        ShippedQty,
+        ReqChgDate,
+        ShippedDate,
+        ContainerID,
+        ExAsiaDate,
+        OpenRelease
+    }
+    public enum Vendor
+    {
+        Company,
+        VendorID,
+        Name,
+        VendorNum,
+        Address1,
+        Address2,
+        Address3,
+        City,
+        State,
+        ZIP,
+        Country
+    }
+    public enum ShipVia
+    {
+        Company,
+        Description,
+        ShipViaCode,
+        Fill
+    }
+    public enum Terms
+    {
+        Company,
+        TermsCode,
+        Description
+    }
+    public enum SalesTer
+    {
+        Company,
+        ConsToPrim,
+        DefTaskSetID,
+        Inactive,
+        PrimeSalesRepCode,
+        RegionCode,
+        TerritoryDesc,
+        TerritoryID,
+        OverrideCommRate
+    }
+    public enum SalesRep
+    {
+        Company,
+        SalesRepCode,
+        Name,
+        CommissionPercent,
+        CommissionEarnedAt,
+        AlertFlag,
+        EMailAddress,
+        WebSaleGetsCommission,
+        bgCommRate,
+        BonusCalcRate,
+        ReaderRate,
+        InActive,
+        RunCommReport,
+        OfficePhoneNum,
+        CellPhoneNum,
+        HomePhoneNum
     }
 }

@@ -31,8 +31,8 @@ namespace connectSql1
 			      select
 		p.Company as Company, -- char 8 
 		p.ContainerID as ContainerID,  --- int 
-			p.ShipDate as ShipDate, --  int after conversion
-	      p.Shipped as Shipped,  -- int
+		p.ShipDate as ShipDate, --  int after conversion
+	    p.Shipped as Shipped,  -- int
 		p.ContainerClass as ContainerClass, -- x 10
 		p.ContainerCost as ContainerCost, -- decimal
 		p.ShippingDays as ShippingDays, -- integer
@@ -67,11 +67,11 @@ namespace connectSql1
       cg.GroupCode  as GroupCode,  -- char 4
       cg.GroupDesc as GroupDesc, -- char 20
       cg.SalesCatID as SalesCatID, -- char 4
-      ''  as Character01, -- char 1000 super group
-      ''  as CheckBox01, -- int?  supress line in reporting
-      ''  as Number01,   -- int sort order
+      cud.SuperGroup_c as SuperGroup,
       0 as filler
      FROM  erp.CustGrup as cg
+     left join erp.CustGrup_UD as cud
+     on cg.SysRowID = cud.ForeignSysRowID
 
             ";
             return sqlextract;
@@ -114,9 +114,19 @@ namespace connectSql1
       cm.ShipViaCode as ShipViaCode,
       cm.GroupCode as GroupCode,
       cg.SalesCatID as channel,
-      cm.CreditHold as CreditHold
+      cm.CreditHold as CreditHold,
+      cm.ResaleID as ResaleID,
+      cm.PrintStatements as PrintStatements,
+      cm.TaxExempt as TaxExempt,
+        cm.TaxRegionCode as TaxRegionCode,
+        cm.CreditLimit as CreditLimit,  
+        cm.PhoneNum as PhoneNum,
+       cmud.BuyGroupCustID_c as BuyGroupCustID
 
      FROM  erp.Customer as cm
+	 left join erp.Customer_UD as cmud
+	      on cm.SysRowID = cmud.ForeignSysRowID
+
         left join erp.CustGrup as cg
         on cg.Company = cm.Company and
            cg.GroupCode = cm.GroupCode
@@ -354,7 +364,7 @@ pt.ReconcileNum as ReconcileNum
       oh.RequestDate as RequestDate,       -- int
       oh.ShipToNum as ShipToNum,           -- int
       oh.ShipViaCode as ShipViaCode,       -- char 4
-      '' as ShortChar01,
+      ohud.OrderType_c as OrderType,
       '' as ShortChar02,
       '' as ShortChar03,
       oh.TermsCode as TermsCode,           -- char 4
@@ -365,11 +375,14 @@ pt.ReconcileNum as ReconcileNum
       oh.TotalMisc as TotalMisc,           -- decimal 12,2
       oh.TotalReleases as TotalReleases,   -- int
       oh.TotalTax as TotalTax,             -- decimal 12,2
-      oh.VoidOrder as VoidOrder,            -- int      
+      oh.VoidOrder as VoidOrder,            -- int 
+      oh.PickListComment as PickListComment,     
       0 as inPrintSetup,        -- int
       0 as offShore,        -- int
       0 as freightFree        -- int
      FROM  erp.OrderHed as oh
+	 left join erp.OrderHed_UD as ohud
+	      on oh.SysRowID = ohud.ForeignSysRowID
 
             ";
             return sqlextract;
@@ -410,17 +423,36 @@ pt.ReconcileNum as ReconcileNum
       substring(p.PartDescription,1,19) as basePart, -- char 20
       substring(p.PartDescription,21,3) as printType,  -- 3
       p.UnitPrice as unitPrice, -- 12,4
-      -- p.ShortChar02 as loc,  -- varchar 50
       p.RunOut  as RunOut,   -- int
       p.SearchWord as SearchWord,  -- varchar 8
       p.TypeCode as TypeCode, -- char 1
-
       p.Inactive as Inactive,
-
       p.ClassID     as ClassID,
       p.SellingFactor as SellingFactor,
       pud.LOC_c as LOC,
-      p.RunOut as RunOut,
+      pud.AICDesc_c as AICDesc,
+      pud.Brand_c as Brand,
+      pud.CasePack_c as CasePack,
+      pud.ColorAssortment_c as ColorAssortment,
+      pud.DirectShip_c as DirectShip,
+      pud.ListPrice__c as ListPrice,
+      pud.Flyer_c as Flyer,
+      pud.FlyerName_c as FlyerName,
+      pud.TeamSpirit_c as TeamSpirit,
+      pud.OrderingType_c as OrderingType,
+      pud.PrintOptions_c as PrintOptions,
+      pud.MaximumWOS_c as MaximumWOS,
+      pud.MinimumWOS_c as MinimumWOS,
+      pud.League_c as t_League,
+      pud.Item_c as t_PartDescrption,
+      pud.ARCoating_c as ARCoating,
+      pud.CoordinatedCase_c as CoordinatedCase,
+      pud.RxAdaptable_c as RxAdaptable,
+      pud.SpringHinge_c as SpringHinge,
+      pud.Program_c as Program,
+      pud.ProgramLOC_c as ProgramLOC, 
+      p.SalesUM as SalesUM,
+      pud.RetailPrice_c as RetailPrice,
       1  as filler
      FROM  erp.Part as p
      LEFT JOIN erp.Part_UD as pud
@@ -625,6 +657,19 @@ return sqlextract;
     where ih.InvoiceNum >= 1100000";
             return sqlextract;
         }
+        public string Sql_RlsHead()
+        {
+            string sqlextract = @"
+            select
+            rl.Company as Company,
+            rl.RlsClassCode as RlsClassCode,
+            rl.TopCustNum as TopCustNum,
+            rl.CustNum as CustNum
+            from erp.RlsHead as rl
+            ";
+
+            return sqlextract;
+        }
         public string Sql_ProdGrup()
         {
             string sqlextract = @"
@@ -632,7 +677,7 @@ return sqlextract;
       pg.Company as Company, -- char 8 
       pg.ProdCode  as ProdCode,  -- char 8
       pg.Description as Description -- char 30
-     FROM  pub.ProdGrup as pg
+     FROM  erp.ProdGrup as pg
             ";
 
             return sqlextract;
@@ -655,7 +700,8 @@ return sqlextract;
       st.Country              as Country, -- x50
       st.TerritoryID          as TerritoryID, -- x8
       st.CountryNum           as CountryNum, -- int
-      st.SalesRepCode         as SalesRepCode
+      st.SalesRepCode         as SalesRepCode,
+      st.ShipViaCode          as ShipViaCode
      FROM  erp.ShipTo as st
             ";
 
@@ -715,6 +761,194 @@ return sqlextract;
       sd.ChangedBy as ChangedBy,            -- char 20
       sd.ChangeDate as ChangeDate          -- int
      FROM  erp.ShipDtl as sd
+            ";
+
+            return sqlextract;
+        }
+        public string Sql_POHeader()
+        {
+            string sqlextract = @"
+      select
+      p.Company as Company, -- char 8 
+      p.PONum  as PONum,  -- integer
+      p.OrderDate as OrderDate, -- int after conversion
+      p.ApprovalStatus as ApprovalStatus, -- char 1
+      p.Approve as Approve, -- smallint
+      p.ApprovedBy as ApprovedBy, -- x 20
+      p.ApprovedDate as ApprovedDate, -- int after 
+      p.BuyerID as BuyerID,  -- x8
+      p.Confirmed as Confirmed, -- smallint
+      p.EntryPerson as EntryPerson, -- x 20
+      p.Linked as Linked, -- smallint
+      p.OpenOrder as OpenOrder, -- smallint
+      p.VendorNum as VendorNum
+     FROM  erp.POHeader as p
+            ";
+
+            return sqlextract;
+        }
+        public string Sql_PODetail()
+        {
+            string sqlextract = @"
+    select
+      p.Company as Company, -- char 8 
+      p.OpenLine as OpenLine, -- int
+      p.VoidLine as VoidLine, -- int
+      p.PONUM  as PONum,  -- integer
+      p.POLine as POLine, -- integer
+      p.LineDesc as LineDesc,   -- x1000
+      p.IUM as IUM, -- x2
+      p.UnitCost as UnitCost, -- decimal.5
+      p.OrderQty as OrderQty, -- decimal 2
+      p.XOrderQty as XOrderQty, -- decimal 2
+      p.Taxable as Taxable, -- int
+      p.PUM as PUM, -- x2      
+      p.CostPerCode as CostPerCode, -- char 1
+      p.PartNum as PartNum, -- x 50
+      p.VenPartNum as VenPartNum, -- int
+      p.AdvancePayBal as AdvancePayBal, -- dec 2
+      p.Confirmed as Confirmed, -- int
+      p.DateChgReq as DateChgReq,  -- int
+      p.ConfirmDate as ConfirmDate, -- int after convert
+      p.OrderNum as OrderNum, -- int
+      p.OrderLine as OrderLine, -- int
+      p.Linked as Linked, -- smallint
+      pdud.CustomerShipDate_c as CustomerShipDate,
+      pdud.ReqDeliveryDate_c as ReqDeliveryDate,
+
+      0 as filler
+    FROM  erp.PODetail as p
+    left join erp.PODetail_UD as pdud
+    on p.SysRowID = pdud.ForeignSysRowID
+            ";
+
+            return sqlextract;
+        }
+        public string Sql_PORel()
+        {
+            string sqlextract = @"
+            
+     select
+      p.Company as Company, -- char 8 
+      p.PONum  as PONum,  -- integer
+      p.POLine as POLine, -- integer
+      p.PORelNum as PORelNum,   -- integer
+      p.DueDate as DueDate, -- int after conversion
+      p.XRelQty as XRelQty, -- decimal
+      p.RelQty  as RelQty, --  decimal
+      p.WarehouseCode as WarehouseCode, -- char 8
+      p.ReceivedQty as ReceivedQty, -- decimal  rec to date
+      p.PromiseDt as PromiseDt, -- int after conversion
+      p.ShippedQty as ShippedQty, -- decimal
+      p.ReqChgDate as ReqChgDate, -- int after
+      p.ShippedDate as ShippedDate, -- int after conversion
+      p.ContainerID as ContainerID,
+      pud.ExAsiaDate_c as ExAsiaDate,
+      p.OpenRelease as OpenRelease,
+      0 as filler
+     FROM  erp.PORel as p
+     left join erp.PORel_UD as pud
+     on p.SysRowID = pud.ForeignSysRowID
+";
+            return sqlextract;
+        }
+        public string Sql_Vendor()
+        {
+            string sqlextract = @"
+      select
+      v.Company as Company, -- char 8 
+      v.VendorID as VendorID,    -- char 8
+      v.Name   as Name,          -- varchar(50)
+      v.VendorNum as VendorNum,  -- int
+      v.Address1 as Address1,   -- varchar(50)
+      v.Address2 as Address2,  -- varchar(50)
+      v.Address3 as Address3,  -- varchar(50)
+      v.City     as City,     -- varchar(50)
+      v.State    as State, -- varchar(50)  
+      v.ZIP    as Zip,     -- varchar(10)  
+      v.Country  as Country
+     FROM  erp.Vendor as v
+            ";
+            return sqlextract;
+        }
+        public string Sql_Region()
+        {
+            string sqlextract = @"
+
+            ";
+
+            return sqlextract;
+        }
+        public string Sql_SalesTer()
+        {
+            string sqlextract = @"
+      select
+      st.Company as Company,               -- char 8 
+      st.ConsToPrim as ConsToPrim,         -- smallint
+      st.DefTaskSetID as DefTaskSetID,     -- Char 8
+      st.Inactive as Inactive,             -- smallint
+      st.PrimeSalesRepCode as PrimeSalesRepCode,  -- char 8
+      st.RegionCode as RegionCode,                -- x 12
+      st.TerritoryDesc as TerritoryDesc,          -- x 30
+      st.TerritoryID as TerritoryID,              -- x 8
+      stud.OverrideCommRate_c as terrCommRate
+     FROM  erp.SalesTer as st
+     left join erp.SalesTer_UD as stud
+ on st.SysRowID = stud.ForeignSysRowID
+
+";
+
+            return sqlextract;
+        }
+        public string Sql_SalesRep()
+        {
+            string sqlextract = @"
+    select
+      sr.Company as Company,                       -- x 8 
+      sr.SalesRepCode as SalesRepCode,             -- x 8
+      sr.Name as Name,                             -- x 30
+      sr.CommissionPercent as CommissionPercent,   -- decimal 
+      sr.CommissionEarnedAt as CommissionEarnedAt,  -- x 1 , I or P  
+      sr.AlertFlag as AlertFlag,                    -- small int
+      sr.EMailAddress as EMailAddress,              -- x 50
+      sr.WebSaleGetsCommission as WebSaleGetsCommission,   -- small int
+      srud.bgCommRate_c as bgCommRate,                      -- decimal
+      srud.BonusCalcRate_c as BonusCalcRate,                      -- decimal
+      srud.ReaderRate_c as ReaderRate,                      -- decimal
+      sr.InActive as InActive,                       -- small int
+      srud.RunCommReport_c as RunCommReport,                    -- small int run report
+      sr.OfficePhoneNum as OfficePhoneNum,
+      sr.CellPhoneNum as CellPhoneNum,
+      sr.HomePhoneNum as HomePhoneNum
+     FROM  erp.SalesRep as sr
+     left join erp.SalesRep_UD as srud
+     on sr.SysRowID = srud.ForeignSysRowID
+            ";
+
+            return sqlextract;
+        }
+        public string Sql_ShipVia()
+        {
+            string sqlextract = @"
+      select
+      sv.Company as Company, -- char 8 
+      sv.Description  as Description,  -- char 30
+      sv.ShipViaCode  as ShipViaCode  -- char 4
+     FROM  erp.ShipVia as sv
+            ";
+
+            return sqlextract;
+        }
+        public string Sql_Terms()
+        {
+            string sqlextract = @"
+      select
+      t.Company as Company, -- char 8 
+      t.TermsCode as TermsCode, -- char 4
+      t.Description  as Description,  -- char 30
+
+     1 as filler
+     FROM  erp.Terms as t
             ";
 
             return sqlextract;
