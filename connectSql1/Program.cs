@@ -20,7 +20,7 @@ namespace connectSql1
             Application.SetCompatibleTextRenderingDefault(false);
             DataMan dtm = new DataMan();
             
-            Application.Run(new mainform());
+        //    Application.Run(new mainform());
         }
 
     }

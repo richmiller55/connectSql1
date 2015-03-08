@@ -1081,7 +1081,7 @@ namespace connectSql1
             using (SqlConnection connection = new SqlConnection(
                 this.connectionString))
             {
-                string file_name = "SaleRep.txt";
+                string file_name = "SalesRep.txt";
                 string file = Path.Combine(transfer_out_base, file_name);
                 var writer = File.CreateText(file);
 
@@ -1099,7 +1099,7 @@ namespace connectSql1
                     row += reader[(int)SalesRep.SalesRepCode] + "\t";
                     row += reader[(int)SalesRep.Name] + "\t";
                     row += reader[(int)SalesRep.CommissionPercent] + "\t";
-                    row += reader[(int)SalesRep.CommissionEarnedAt] + "\t";
+                    row += boolstr_to_int(reader[(int)SalesRep.CommissionEarnedAt].ToString()) + "\t";
                     row += boolstr_to_int(reader[(int)SalesRep.AlertFlag].ToString()) + "\t";
                     row += reader[(int)SalesRep.EMailAddress] + "\t";
                     row += reader[(int)SalesRep.WebSaleGetsCommission] + "\t";
@@ -1122,7 +1122,7 @@ namespace connectSql1
             using (SqlConnection connection = new SqlConnection(
                 this.connectionString))
             {
-                string file_name = "SaleTer.txt";
+                string file_name = "SalesTer.txt";
                 string file = Path.Combine(transfer_out_base, file_name);
                 var writer = File.CreateText(file);
 
@@ -1137,7 +1137,7 @@ namespace connectSql1
                     counter++;
                     string row = counter.ToString() + "\t";
                     row += reader[(int)SalesTer.Company] + "\t";
-                    row += reader[(int)SalesTer.ConsToPrim] + "\t";
+                    row += boolstr_to_int(reader[(int)SalesTer.ConsToPrim].ToString()) + "\t";
                     row += reader[(int)SalesTer.DefTaskSetID] + "\t";
                     row += boolstr_to_int(reader[(int)SalesTer.Inactive].ToString()) + "\t";
                     row += reader[(int)SalesTer.PrimeSalesRepCode] + "\t";
