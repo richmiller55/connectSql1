@@ -46,10 +46,10 @@ namespace connectSql1
             run_PODetail();
             run_PORel();
             run_RlsHead();
-
+            run_UDCodes();
             run_ContainerHeader();
             run_ContainerDetail();
-
+            run_Warehse();
 
             /*   
             
@@ -142,7 +142,7 @@ namespace connectSql1
                 SqlCommand command = new SqlCommand(select.Sql_OrderHed(), connection);
                 connection.Open();
                 SqlDataReader reader = command.ExecuteReader();
-                int counter = 0;
+                int counter = 10107958;
                 while (reader.Read())
                 {
                     counter++;
@@ -158,21 +158,18 @@ namespace connectSql1
                     row += reader[(int)OrderHed.ShipToNum] + "\t";
                     row += reader[(int)OrderHed.ShipViaCode] + "\t";
                     row += reader[(int)OrderHed.OrderType] + "\t";
-                    row += reader[(int)OrderHed.ShortChar02] + "\t";
-                    row += reader[(int)OrderHed.ShortChar03] + "\t";
                     row += reader[(int)OrderHed.TermsCode] + "\t";
                     row += reader[(int)OrderHed.TotalCharges] + "\t";
                     row += reader[(int)OrderHed.TotalComm] + "\t";
                     row += reader[(int)OrderHed.TotalInvoiced] + "\t";
                     row += reader[(int)OrderHed.TotalLines] + "\t";
                     row += reader[(int)OrderHed.TotalMisc] + "\t";
-                    row += reader[(int)OrderHed.TotalInvoiced] + "\t";
-                    row += reader[(int)OrderHed.TotalLines] + "\t";
-                    row += reader[(int)OrderHed.TotalMisc] + "\t";
                     row += reader[(int)OrderHed.TotalReleases] + "\t";
                     row += reader[(int)OrderHed.TotalTax] + "\t";
                     row += boolstr_to_int(reader[(int)OrderHed.VoidOrder].ToString()) + "\t";
-                    row += reader[(int)OrderHed.PickListComment] + "\t";
+                    row += boolstr_to_int(reader[(int)OrderHed.inPrintSetup].ToString()) + "\t";
+                    row += boolstr_to_int(reader[(int)OrderHed.offShore].ToString()) + "\t";
+                    row += boolstr_to_int(reader[(int)OrderHed.freightFree].ToString()) + "\t";
                     row += "fill\n";
                     writer.Write(row);
                 }
@@ -192,7 +189,7 @@ namespace connectSql1
                 SqlCommand command = new SqlCommand(select.Sql_OrderDtl(), connection);
                 connection.Open();
                 SqlDataReader reader = command.ExecuteReader();
-                int counter = 0;
+                int counter = 1436043;
                 while (reader.Read())
                 {
                     counter++;
@@ -211,9 +208,6 @@ namespace connectSql1
                     row += DateToString(reader[(int)OrderDtl.NeedByDate].ToString()) + "\t";
                     row += DateToString(reader[(int)OrderDtl.RequestDate].ToString()) + "\t";
                     row += reader[(int)OrderDtl.SalesCatID] + "\t";
-                    row += reader[(int)OrderDtl.ShortChar01] + "\t";
-                    row += reader[(int)OrderDtl.ShortChar02] + "\t";
-                    row += reader[(int)OrderDtl.ShortChar03] + "\t";
                     row += reader[(int)OrderDtl.UnitPrice] + "\t";
                     row += reader[(int)OrderDtl.VoidLine] + "\t";
                     row += reader[(int)OrderDtl.SellingFactor] + "\t";
@@ -221,6 +215,7 @@ namespace connectSql1
                     row += reader[(int)OrderDtl.Discount] + "\t";
                     row += reader[(int)OrderDtl.DiscountPercent] + "\t";
                     row += reader[(int)OrderDtl.EDIPOlineNum] + "\t";
+                    row += reader[(int)OrderDtl.SellingQuantity] + "\t";
                     row += "fill\n";
                     writer.Write(row);
                 }
@@ -241,7 +236,7 @@ namespace connectSql1
                 SqlCommand command = new SqlCommand(select.Sql_InvcDtl(), connection);
                 connection.Open();
                 SqlDataReader reader = command.ExecuteReader();
-                int counter = 0;
+                int counter = 1213787;
                 while (reader.Read())
                 {
                     counter++;
@@ -277,8 +272,9 @@ namespace connectSql1
                     row += reader[(int)InvcDtl.DiscountPercent] + "\t";
                     row += reader[(int)InvcDtl.SellingFactor] + "\t";
                     row += reader[(int)InvcDtl.SellingFactorDirection] + "\t";
-                    row += reader[(int)InvcDtl.filler] + "\t";
-                    row += "fill\n";
+                    row += "e10" + "\t";
+                    row += reader[(int)InvcDtl.filler] + "\n";
+                    
                     writer.Write(row);
                 }
                 writer.Close();
@@ -298,7 +294,7 @@ namespace connectSql1
                 SqlCommand command = new SqlCommand(select.Sql_InvcHeadEx(), connection);
                 connection.Open();
                 SqlDataReader reader = command.ExecuteReader();
-                int counter = 0;
+                int counter = 459230;
                 while (reader.Read())
                 {
                     counter++;
@@ -324,7 +320,8 @@ namespace connectSql1
 
                     row += reader[(int)InvcHeadEx.InvoiceSuffix] + "\t";
                     row += reader[(int)InvcHeadEx.CheckBox01] + "\t";
-                    row += "fill\n";
+                    row += "e10" + "\t";
+                    row += "0\n";
                     writer.Write(row);
                 }
                 writer.Close();
@@ -544,6 +541,9 @@ namespace connectSql1
                     row += reader[(int)ProdGrup.Company] + "\t";
                     row += reader[(int)ProdGrup.Description] + "\t";
                     row += reader[(int)ProdGrup.ProdCode] + "\t";
+                    row += reader[(int)ProdGrup.Burden] + "\t";
+                    row += reader[(int)ProdGrup.Duty] + "\t";
+                    row += reader[(int)ProdGrup.RetailFlag] + "\t";
                     row += "fill\n";
                     writer.Write(row);
                 }
@@ -735,6 +735,7 @@ namespace connectSql1
                     row += reader[(int)CustGrup.GroupDesc] + "\t";
                     row += reader[(int)CustGrup.SalesCatID] + "\t";
                     row += reader[(int)CustGrup.SuperGroup] + "\t";
+                    row += reader[(int)CustGrup.SortOrder] + "\t";
 
                     row += "fill\n";
                     writer.Write(row);
@@ -774,6 +775,7 @@ namespace connectSql1
                     row += boolstr_to_int(reader[(int)POHeader.Linked].ToString()) + "\t";
                     row += boolstr_to_int(reader[(int)POHeader.OpenOrder].ToString()) + "\t";
                     row += reader[(int)POHeader.VendorNum] + "\t";
+                    row += reader[(int)POHeader.VendorId] + "\t";
                     row += "fill\n";
                     writer.Write(row);
                 }
@@ -929,8 +931,6 @@ namespace connectSql1
                     string row = counter.ToString() + "\t";
                     row += reader[(int)Part.Company] + "\t";
                     row += reader[(int)Part.partNum] + "\t";
-                    string partDescr = reader[(int)Part.PartDescription].ToString();
-                    row += partDescr.Trim() + "\t";
                     row += reader[(int)Part.ProdCode] + "\t";
                     row += reader[(int)Part.BasePart] + "\t";
                     row += reader[(int)Part.PrintType] + "\t";
@@ -957,14 +957,16 @@ namespace connectSql1
                     row += reader[(int)Part.MaximumWOS] + "\t";
                     row += reader[(int)Part.League] + "\t";
                     row += reader[(int)Part.TeamPartDescrption] + "\t";
-                    row += reader[(int)Part.ARCoating] + "\t";
-                    row += reader[(int)Part.CoordinatedCase] + "\t";
-                    row += reader[(int)Part.RxAdaptable] + "\t";
-                    row += reader[(int)Part.SpringHinge] + "\t";
+                    row += boolstr_to_int(reader[(int)Part.ARCoating].ToString()) + "\t";
+                    row += boolstr_to_int(reader[(int)Part.CoordinatedCase].ToString()) + "\t";
+                    row += boolstr_to_int(reader[(int)Part.RxAdaptable].ToString()) + "\t";
+                    row += boolstr_to_int(reader[(int)Part.SpringHinge].ToString()) + "\t";
                     row += reader[(int)Part.Program] + "\t";
                     row += reader[(int)Part.ProgramLOC] + "\t";
                     row += reader[(int)Part.SalesUM] + "\t";
                     row += reader[(int)Part.RetailPrice] + "\t";
+                    string partDescr = reader[(int)Part.PartDescription].ToString();
+                    row += partDescr.TrimEnd() + "\t";
                     row += "fill\n";
                     writer.Write(row);
                 }
@@ -1006,14 +1008,15 @@ namespace connectSql1
                     row += reader[(int)Customer.ShipViaCode] + "\t";
                     row += reader[(int)Customer.GroupCode] + "\t";
                     row += reader[(int)Customer.SalesCatID] + "\t";
-                    row += reader[(int)Customer.CreditHold] + "\t";
+                    row += boolstr_to_int(reader[(int)Customer.CreditHold].ToString()) + "\t";
                     row += reader[(int)Customer.ResaleID] + "\t";
-                    row += reader[(int)Customer.PrintStatements] + "\t";
-                    row += reader[(int)Customer.TaxExempt] + "\t";
+                    row += boolstr_to_int(reader[(int)Customer.PrintStatements].ToString()) + "\t";
+                    row += boolstr_to_int(reader[(int)Customer.TaxExempt].ToString()) + "\t";
                     row += reader[(int)Customer.TaxRegionCode] + "\t";
                     row += reader[(int)Customer.CreditLimit] + "\t";
                     row += reader[(int)Customer.PhoneNum] + "\t";
                     row += reader[(int)Customer.BuyGroupCustID] + "\t";
+                    row += reader[(int)Customer.VisionSourceID] + "\t";
                     row += "fill\n";
                     writer.Write(row);
                 }
@@ -1146,6 +1149,64 @@ namespace connectSql1
                     row += reader[(int)SalesTer.TerritoryID] + "\t";
                     row += reader[(int)SalesTer.OverrideCommRate] + "\t";
 
+                    row += "fill\n";
+                    writer.Write(row);
+                }
+                writer.Close();
+            }
+        }
+        private void run_UDCodes()
+        {
+            using (SqlConnection connection = new SqlConnection(
+                this.connectionString))
+            {
+                string file_name = "UDCodes.txt";
+                string file = Path.Combine(transfer_out_base, file_name);
+                var writer = File.CreateText(file);
+
+                sql_select select = new sql_select();
+
+                SqlCommand command = new SqlCommand(select.Sql_UDCodes(), connection);
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                int counter = 0;
+                while (reader.Read())
+                {
+                    counter++;
+                    string row = counter.ToString() + "\t";
+                    row += reader[(int)UDCodes.Company] + "\t";
+                    row += reader[(int)UDCodes.CodeTypeID] + "\t";
+                    row += reader[(int)UDCodes.CodeID] + "\t";
+                    row += boolstr_to_int(reader[(int)UDCodes.IsActive].ToString()) + "\t";
+                    row += reader[(int)UDCodes.CodeDesc] + "\t";
+                    row += reader[(int)UDCodes.LongDesc] + "\t";
+                    row += "fill\n";
+                    writer.Write(row);
+                }
+                writer.Close();
+            }
+        }
+        private void run_Warehse()
+        {
+            using (SqlConnection connection = new SqlConnection(
+                this.connectionString))
+            {
+                string file_name = "Warehse.txt";
+                string file = Path.Combine(transfer_out_base, file_name);
+                var writer = File.CreateText(file);
+
+                sql_select select = new sql_select();
+
+                SqlCommand command = new SqlCommand(select.Sql_Warehse(), connection);
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                int counter = 0;
+                while (reader.Read())
+                {
+                    counter++;
+                    string row = counter.ToString() + "\t";
+                    row += reader[(int)Warehse.WarehouseCode] + "\t";
+                    row += reader[(int)Warehse.Description] + "\t";
                     row += "fill\n";
                     writer.Write(row);
                 }

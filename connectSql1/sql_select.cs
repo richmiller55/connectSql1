@@ -68,6 +68,7 @@ namespace connectSql1
       cg.GroupDesc as GroupDesc, -- char 20
       cg.SalesCatID as SalesCatID, -- char 4
       cud.SuperGroup_c as SuperGroup,
+      cud.SortOrder_c as SortOrder,
       0 as filler
      FROM  erp.CustGrup as cg
      left join erp.CustGrup_UD as cud
@@ -121,7 +122,8 @@ namespace connectSql1
         cm.TaxRegionCode as TaxRegionCode,
         cm.CreditLimit as CreditLimit,  
         cm.PhoneNum as PhoneNum,
-       cmud.BuyGroupCustID_c as BuyGroupCustID
+       cmud.BuyGroupCustID_c as BuyGroupCustID,
+       cmud.VisionSourceID_c as VisionSourceID
 
      FROM  erp.Customer as cm
 	 left join erp.Customer_UD as cmud
@@ -334,19 +336,18 @@ pt.ReconcileNum as ReconcileNum
       od.NeedByDate as NeedByDate, -- int after conversion
       od.RequestDate as RequestDate, -- int after conversion
       od.SalesCatID as SalesCatID,   -- char 4
-      '' as ShortChar01,
-      '' as ShortChar02,
-      '' as ShortChar03,
-
       od.UnitPrice as UnitPrice,     -- decimal 12,4
       od.VoidLine as VoidLine,       -- int
       od.SellingFactor as SellingFactor,
       od.XPartNum as XPartNum,
       od.Discount as Discount,
       od.DiscountPercent as DiscountPercent,
-      10 as EDIPOlineNum,
+      odud.EDIPOLineNo_c as EDIPOlineNum,
+    od.SellingQuantity as SellingQuantity,
       0 as filler
      FROM  erp.OrderDtl as od
+     left join erp.OrderDtl_UD as odud
+     on od.SysRowID = odud.ForeignSysRowID
             ";
             return sqlextract;
         }
@@ -365,8 +366,6 @@ pt.ReconcileNum as ReconcileNum
       oh.ShipToNum as ShipToNum,           -- int
       oh.ShipViaCode as ShipViaCode,       -- char 4
       ohud.OrderType_c as OrderType,
-      '' as ShortChar02,
-      '' as ShortChar03,
       oh.TermsCode as TermsCode,           -- char 4
       oh.TotalCharges as TotalCharges,     -- decimal 12,2
       oh.TotalComm as TotalComm,           --  decimal 12,2
@@ -376,10 +375,10 @@ pt.ReconcileNum as ReconcileNum
       oh.TotalReleases as TotalReleases,   -- int
       oh.TotalTax as TotalTax,             -- decimal 12,2
       oh.VoidOrder as VoidOrder,            -- int 
-      oh.PickListComment as PickListComment,     
-      0 as inPrintSetup,        -- int
-      0 as offShore,        -- int
-      0 as freightFree        -- int
+      ohud.PrintSetup_c as inPrintSetup,
+      ohud.OverseasOrder_c as offShore,        -- int
+      ohud.FreeFreight_c as freightFree      -- int
+      
      FROM  erp.OrderHed as oh
 	 left join erp.OrderHed_UD as ohud
 	      on oh.SysRowID = ohud.ForeignSysRowID
@@ -535,6 +534,12 @@ pt.ReconcileNum as ReconcileNum
             ";
             return sqlextract;
         }
+        public string Sql_WhseBin()
+        {
+            string sqlextract = @"
+            ";
+            return sqlextract;
+        }
         public string Sql_InvcHeadEx()
         {
             string sqlextract = @"
@@ -676,8 +681,30 @@ return sqlextract;
       select
       pg.Company as Company, -- char 8 
       pg.ProdCode  as ProdCode,  -- char 8
-      pg.Description as Description -- char 30
+      pg.Description as Description, -- char 30
+      pud.Burden_c as Burden,
+      pud.Duty_c as Duty,
+      pud.RetailFlag_c as RetailFlag
      FROM  erp.ProdGrup as pg
+     LEFT JOIN erp.ProdGrup_UD as pud
+     on pg.SysRowID = pud.ForeignSysRowID
+
+";
+
+            return sqlextract;
+        }
+        public string Sql_UDCodes()
+        {
+            string sqlextract = @"
+      select
+      ic.Company as Company,
+      ic.CodeTypeID as CodeTypeID,
+      ic.CodeID as CodeID,
+      ic.IsActive as IsActive,
+      ic.CodeDesc as CodeDesc,
+      ic.LongDesc as LongDesc
+     
+FROM  ice.UDCodes as ic
             ";
 
             return sqlextract;
@@ -781,8 +808,11 @@ return sqlextract;
       p.EntryPerson as EntryPerson, -- x 20
       p.Linked as Linked, -- smallint
       p.OpenOrder as OpenOrder, -- smallint
-      p.VendorNum as VendorNum
+      p.VendorNum as VendorNum,
+      v.VendorId as VendorId
      FROM  erp.POHeader as p
+     left join erp.Vendor as v
+     on p.VendorNum = v.VendorNum
             ";
 
             return sqlextract;
@@ -843,12 +873,12 @@ return sqlextract;
       p.ReqChgDate as ReqChgDate, -- int after
       p.ShippedDate as ShippedDate, -- int after conversion
       p.ContainerID as ContainerID,
-      pud.ExAsiaDate_c as ExAsiaDate,
+      0  as ExAsiaDate,
       p.OpenRelease as OpenRelease,
       0 as filler
      FROM  erp.PORel as p
-     left join erp.PORel_UD as pud
-     on p.SysRowID = pud.ForeignSysRowID
+     -- left join erp.PORel_UD as pud
+     -- on p.SysRowID = pud.ForeignSysRowID
 ";
             return sqlextract;
         }
@@ -949,6 +979,17 @@ return sqlextract;
 
      1 as filler
      FROM  erp.Terms as t
+            ";
+
+            return sqlextract;
+        }
+        public string Sql_Warehse()
+        {
+            string sqlextract = @"
+            select 
+             w.WarehouseCode as WarehouseCode,
+             w.Description as Description
+             from erp.Warehse as w
             ";
 
             return sqlextract;

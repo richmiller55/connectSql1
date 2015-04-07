@@ -52,7 +52,8 @@ namespace connectSql1
         TaxRegionCode,
         CreditLimit,
         PhoneNum,
-        BuyGroupCustID
+        BuyGroupCustID,
+        VisionSourceID
     }
     public enum InvcDtl
     {
@@ -170,16 +171,14 @@ namespace connectSql1
         NeedByDate,
         RequestDate,
         SalesCatID,
-        ShortChar01,
-        ShortChar02,
-        ShortChar03,
         UnitPrice,
         VoidLine,
         SellingFactor,
         XPartNum,
         Discount,
         DiscountPercent,
-        EDIPOlineNum
+        EDIPOlineNum,
+        SellingQuantity
     }
     public enum OrderHed
     {
@@ -194,8 +193,6 @@ namespace connectSql1
         ShipToNum,
         ShipViaCode,
         OrderType,
-        ShortChar02,
-        ShortChar03,
         TermsCode,
         TotalCharges,
         TotalComm,
@@ -205,10 +202,10 @@ namespace connectSql1
         TotalReleases,
         TotalTax,
         VoidOrder,
-        PickListComment,
-        CheckBox04,
-        CheckBox07,
-        CheckBox03
+        inPrintSetup,
+        offShore,
+        freightFree
+
     }
     public enum CustomerFull
     {
@@ -273,6 +270,7 @@ namespace connectSql1
       GroupDesc ,
       SalesCatID ,
       SuperGroup,
+      SortOrder,
       filler
     }
     public enum Part
@@ -329,7 +327,10 @@ namespace connectSql1
     {
         Company,
         ProdCode,
-        Description
+        Description,
+        Burden,
+        Duty,
+        RetailFlag
     }
     public enum ShipTo
     {
@@ -416,7 +417,8 @@ namespace connectSql1
         EntryPerson,
         Linked,
         OpenOrder,
-        VendorNum
+        VendorNum,
+        VendorId
     }
     public enum PODetail
     {
@@ -522,5 +524,19 @@ namespace connectSql1
         OfficePhoneNum,
         CellPhoneNum,
         HomePhoneNum
+    }
+    public enum UDCodes
+    {
+        Company,
+        CodeTypeID,
+        CodeID,
+        IsActive,
+        CodeDesc,
+        LongDesc
+    }
+    public enum Warehse
+    {
+        WarehouseCode,
+        Description
     }
 }
