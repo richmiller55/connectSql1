@@ -465,6 +465,7 @@ namespace connectSql1
         ShippedDate,
         ContainerID,
         ExAsiaDate,
+        ExpressDate,
         OpenRelease
     }
     public enum Vendor

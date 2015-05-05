@@ -873,12 +873,13 @@ FROM  ice.UDCodes as ic
       p.ReqChgDate as ReqChgDate, -- int after
       p.ShippedDate as ShippedDate, -- int after conversion
       p.ContainerID as ContainerID,
-      0  as ExAsiaDate,
+      pud.ExAsiaDate_c  as ExAsiaDate,
+      pud.ExpressDate_c  as ExpressDate,
       p.OpenRelease as OpenRelease,
       0 as filler
      FROM  erp.PORel as p
-     -- left join erp.PORel_UD as pud
-     -- on p.SysRowID = pud.ForeignSysRowID
+     left join erp.PORel_UD as pud
+     on p.SysRowID = pud.ForeignSysRowID
 ";
             return sqlextract;
         }

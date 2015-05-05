@@ -87,6 +87,7 @@ namespace connectSql1
                     row += reader[(int)ContainerHeader.ContainerDescription] + "\t";
                     row += reader[(int)ContainerHeader.Volume] + "\t";
                     row += reader[(int)ContainerHeader.ContainerReference] + "\t";
+                    row += "e10" + "\t";
                     row += "fill\n";
                     writer.Write(row);
                 }
@@ -122,6 +123,7 @@ namespace connectSql1
                     row += reader[(int)ContainerDetail.Volume] + "\t";
                     row += reader[(int)ContainerDetail.VendorNum] + "\t";
                     row += reader[(int)ContainerDetail.OurUnitCost] + "\t";
+                    row += "e10" + "\t";
                     row += "fill\n";
                     writer.Write(row);
                 }
@@ -867,6 +869,7 @@ namespace connectSql1
                     row += DateToString(reader[(int)PORel.ShippedDate].ToString()) + "\t";
                     row += reader[(int)PORel.ContainerID] + "\t";
                     row += DateToString(reader[(int)PORel.ExAsiaDate].ToString()) + "\t";
+                    row += DateToString(reader[(int)PORel.ExpressDate].ToString()) + "\t";
                     row += boolstr_to_int(reader[(int)PORel.OpenRelease].ToString()) + "\t";
                     row += "fill\n";
                     writer.Write(row);
