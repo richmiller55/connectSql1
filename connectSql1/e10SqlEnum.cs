@@ -25,7 +25,8 @@ namespace connectSql1
         ShippingDays,
         ContainerDescription,
         Volume,
-        ContainerReference
+        ContainerReference,
+        ShipStatus
     }
     public enum Customer
     {

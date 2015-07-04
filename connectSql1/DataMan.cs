@@ -87,6 +87,7 @@ namespace connectSql1
                     row += reader[(int)ContainerHeader.ContainerDescription] + "\t";
                     row += reader[(int)ContainerHeader.Volume] + "\t";
                     row += reader[(int)ContainerHeader.ContainerReference] + "\t";
+                    row += reader[(int)ContainerHeader.ShipStatus] + "\t";
                     row += "e10" + "\t";
                     row += "fill\n";
                     writer.Write(row);
@@ -420,9 +421,9 @@ namespace connectSql1
                     row += reader[(int)OrderRel.OrderNum] + "\t";
                     row += reader[(int)OrderRel.OrderLine] + "\t";
                     row += reader[(int)OrderRel.OrderRelNum] + "\t";
-                    row += reader[(int)OrderRel.OpenRelease] + "\t";
-                    row += reader[(int)OrderRel.FirmRelease] + "\t";
-                    row += reader[(int)OrderRel.VoidRelease] + "\t";
+                    row += boolstr_to_int( reader[(int)OrderRel.OpenRelease].ToString() ) + "\t";
+                    row += boolstr_to_int(reader[(int)OrderRel.FirmRelease].ToString()) + "\t";
+                    row += boolstr_to_int(reader[(int)OrderRel.VoidRelease].ToString()) + "\t";
                     row += reader[(int)OrderRel.RevisionNum] + "\t";
                     row += DateToString(reader[(int)OrderRel.NeedByDate].ToString()) + "\t";
                     row += reader[(int)OrderRel.MarkForNum] + "\t";
@@ -949,7 +950,7 @@ namespace connectSql1
                     row += reader[(int)Part.Brand] + "\t";
                     row += reader[(int)Part.CasePack] + "\t";
                     row += reader[(int)Part.ColorAssortment] + "\t";
-                    row += reader[(int)Part.DirectShip] + "\t";
+                    row += boolstr_to_int(reader[(int)Part.DirectShip].ToString()) + "\t";
                     row += reader[(int)Part.ListPrice] + "\t";
                     row += reader[(int)Part.Flyer] + "\t";
                     row += reader[(int)Part.FlyerName] + "\t";

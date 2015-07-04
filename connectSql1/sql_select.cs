@@ -38,7 +38,8 @@ namespace connectSql1
 		p.ShippingDays as ShippingDays, -- integer
 		p.ContainerDescription as ContainerDescription, -- x 50
 		p.Volume as Volume, -- decimal 2
-		p.ContainerReference as ContainerReference -- x 50
+		p.ContainerReference as ContainerReference,
+        p.ShipStatus as ShipStatus
 		FROM  erp.ContainerHeader as p
 	";
             return sqlextract;
